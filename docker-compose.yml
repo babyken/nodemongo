@@ -1,0 +1,43 @@
+version: "3"
+services:
+  app:
+    container_name: nodeplayground-app
+    build: ./node
+    command: bash -c "/usr/wait-for-it.sh --timeout=300 mongo:27017 && npm run server"
+    volumes:
+      - ./node:/usr/app/
+      - /usr/app/node_modules
+    ports:
+      - "80:3000" #Local:Container
+    depends_on:
+      - mongo
+  mongo:
+    container_name: nodeplayground-mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
+  mongo-express:
+    container_name: nodeplayground-mongo-express
+    build: mongo-express
+    command: bash -c "/wait-for-it.sh --timeout=300 mongo:27017 && /docker-entrypoint.sh"
+    depends_on: 
+      - mongo
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_AUTH_DATABASE=admin
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=pass
+    ports:
+      - "8081:8081"
+
+# mongo-express reference
+# docker run -it --rm -p 8081:8081 --link mongo:mongo --net nodemongo_default mongo-express
+
+# Reference for init setup with cli
+#   docker run --rm -it --name node-docker \
+# -v $PWD:/home/app -w /home/app \
+# -e "PORT=3000" -p 8080:3000  \
+# -u node node:latest /bin/bash
