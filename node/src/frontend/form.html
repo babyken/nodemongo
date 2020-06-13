@@ -19,16 +19,49 @@
 </html>
 
 <script>
+  function ajaxReq() {
+    if (window.XMLHttpRequest) {
+      return new XMLHttpRequest();
+    } else if (window.ActiveXObject) {
+      return new ActiveXObject("Microsoft.XMLHTTP");
+    } else {
+      alert("Browser does not support XMLHTTP.");
+      return false;
+    }
+  }
+
   $("#my-form").submit(function (event) {
     event.preventDefault();
     console.log("submit");
 
+    var checkBoxArr = [];
+
     $.each($("input[name='veh[]']:checked"), function () {
+      checkBoxArr.push($(this).val());
       console.log($(this).val());
     });
 
-    console.log($(this).serialize())
+    console.log(checkBoxArr);
+    var xmlhttp = ajaxReq();
+    var url = "http://localhost/json";
+    var params = JSON.stringify({ veh: checkBoxArr });
 
+    xmlhttp.open("POST", url, true); // set true for async, false for sync request
+    xmlhttp.setRequestHeader("Content-type", "application/json");
+    xmlhttp.send(params); // or null, if no parameters are passed
 
+    xmlhttp.onreadystatechange = function () {
+      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        try {
+          var obj = JSON.parse(xmlhttp.responseText);
+
+          console.log(obj);
+
+          // do your work here
+        } catch (error) {
+          throw Error;
+        }
+      }
+    };
   });
 </script>
