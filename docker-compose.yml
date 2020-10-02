@@ -6,9 +6,9 @@ services:
     command: bash -c "/usr/wait-for-it.sh --timeout=300 mongo:27017 && npm run server"
     volumes:
       - ./node:/usr/app/
-      - /usr/app/node_modules
+      - ./node/node_modules:/usr/app/node_modules
     ports:
-      - "80:3000" #Local:Container
+      - "80:3003" #Local:Container
     depends_on:
       - mongo
   mongo:
