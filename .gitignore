@@ -1,9 +1,3 @@
 data
 dist
 /old_node
-/node/node_modules
-/node/src
-/node/.env
-/node/yarn.lock
-/node/package-lock.json
-/node/package.json

@@ -2,11 +2,11 @@ version: "3"
 services:
   app:
     container_name: nodeplayground-app
-    build: ./node
+    build: node
     command: bash -c "/usr/wait-for-it.sh --timeout=300 mongo:27017 && npm run server"
     volumes:
-      - ./node:/usr/app/
-      - ./node/node_modules:/usr/app/node_modules
+      - ../nodejs:/usr/app/
+      - ../nodejs/node_modules:/usr/app/node_modules
     ports:
       - "80:3003" #Local:Container
     depends_on:
